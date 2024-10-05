@@ -3,7 +3,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { PenBox } from "lucide-react";
 import { Button } from './ui/button'
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
+import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
+import UserMenu from './user-menu';
 function Header() {
     return (
         <nav className='mx-auto py-2 flex justify-between items-center shadow-md border-b-2'>
@@ -26,7 +27,7 @@ function Header() {
                     </SignInButton>
                 </SignedOut>
                 <SignedIn>
-                    <UserButton />
+                    <UserMenu />
                 </SignedIn>
             </div>
         </nav>
