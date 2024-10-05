@@ -5,7 +5,9 @@ import { PenBox } from "lucide-react";
 import { Button } from './ui/button'
 import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 import UserMenu from './user-menu';
-function Header() {
+import { checkUser } from '@/lib/checkUser';
+async function Header() {
+    await checkUser();
     return (
         <nav className='mx-auto py-2 flex justify-between items-center shadow-md border-b-2'>
             <Link href={"/"} className='flex items-center'>
