@@ -23,7 +23,7 @@ export const checkUser = async () => {
             data: {
                 clerkUserId: user.id,
                 name,
-                username: name.split(" ").join("-") + user.id.slice(-4),
+                username: name.split(" ").join("_") + user.id.slice(-4),
                 imageUrl: user.imageUrl,
                 email: user.emailAddresses[0].emailAddress,
             },
