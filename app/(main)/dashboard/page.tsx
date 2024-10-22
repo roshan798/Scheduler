@@ -6,7 +6,7 @@ import { useUser } from '@clerk/nextjs';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { userSchema } from "@/app/lib/validators";
+import { userSchema } from "@/lib/validators";
 import useFetch from '@/hooks/useFetch';
 import { updateUsername } from '@/actions/users';
 import { BarLoader } from 'react-spinners';

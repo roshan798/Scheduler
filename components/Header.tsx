@@ -9,7 +9,7 @@ import { checkUser } from '@/lib/checkUser';
 async function Header() {
     await checkUser();
     return (
-        <nav className='mx-auto py-2 flex justify-between items-center shadow-md border-b-2'>
+        <nav className='mx-auto py-2 flex justify-between items-center shadow-md border-b-2 bg-white'>
             <Link href={"/"} className='flex items-center'>
                 <Image
                     src="/logo.png"
