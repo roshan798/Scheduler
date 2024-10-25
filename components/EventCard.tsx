@@ -21,10 +21,10 @@ type Event = {
     title: string;
     description: string | null;
     duration: number;
-    userId: string;
+    userId ?: string;
     isPrivate: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt ?: Date;
+    updatedAt ?: Date;
     _count: {
         bookings: number;
     };
