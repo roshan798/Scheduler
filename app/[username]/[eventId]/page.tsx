@@ -1,101 +1,82 @@
-import { getUserByUserName } from '@/actions/users';
-import EventCard from '@/components/EventCard';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getEventAvailability, getEventDetails } from '@/actions/events';
 import { notFound } from 'next/navigation';
-import React from 'react';
+import React, { Suspense } from 'react';
+import EventDetails from './_components/EventDetails';
+import BookingForm from './_components/BookingForm';
 
-interface UserPageProps {
+interface EventPageProps {
     params: {
         username: string;
+        eventId: string
     };
-}
-
-interface User {
-    id: string;
-    email: string;
-    name: string | null;
-    imageUrl: string | null;
-    events: {
-        id: string;
-        _count: {
-            bookings: number;
-        };
-        isPrivate: boolean;
-        title: string;
-        description: string | null;
-        duration: number;
-    }[];
 }
 
 interface GenerateMetaDataParams {
     params: {
         username: string;
+        eventId: string;
     };
 }
 
 interface MetaData {
     title: string;
-    description: string;
+    description?: string;
     image?: string;
 }
 
 export async function generateMetadata({ params }: GenerateMetaDataParams): Promise<MetaData> {
-    const user = await getUserByUserName(params.username);
-    if (!user) {
+    const event = await getEventDetails(params.username, params.eventId);
+    if (!event) {
         return {
-            title: 'User Not Found | Scheduler',
-            description: 'User not found. Please check the username and try again.',
+            title: 'Event Not Found | Scheduler',
         };
     }
     return {
-        title: `${user?.name}'s Profile | Scheduler`,
-        description: `Book an event with ${user?.name}. View available public events and schedules.`,
-        image: user?.imageUrl as string,
+        title: `Book ${event.title} with ${event.user.name} | Scheduler`,
+        description: `Schedule a ${event.duration}-minutes ${event.title} event with ${event.user.name}.`,
     };
 }
 
+export interface User {
+    email: string;
+    name: string | null;
+    imageUrl: string | null;
+    username: string | null;
 
-const UserPage: React.FC<UserPageProps> = async ({ params }) => {
-    const user: User | null = await getUserByUserName(params.username);
-    console.log(params.username, user);
+}
+export interface Event {
+    id: string;
+    title: string;
+    description: string | null;
+    duration: number;
+    userId: string;
+    isPrivate: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
 
-    if (!user) {
+export type GetEventDetails = ({
+    user: User;
+} & Event) | null;
+
+const EventPage: React.FC<EventPageProps> = async ({ params }) => {
+    const event: GetEventDetails = await getEventDetails(params.username, params.eventId);
+    const availability = await getEventAvailability(params.eventId);
+    // console.log(event, availability);
+
+    if (!event) {
         notFound();
     }
 
     return (
-        <div className='container mx-auto px-4 py-8'>
-            <div className='flex flex-col items-center mb-8'>
-                <Avatar className='w-24 h-24 mb-4'>
-                    <AvatarImage src={user.imageUrl as string} alt={user.name as string} />
-                    <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <h1 className='text-3xl font-bold mb-2'>{user.name}</h1>
-                <p className='to-gray-600 text-center'>
-                    Welcome to my scheduling page. Please select an event to book a slot.
-                </p>
-            </div>
-            {
-                user.events.length === 0
-                    ? (
-                        <p className='text-center text-gray-600'>
-                            No Public events available.
-                        </p>
-                    ) : (
-                        <div className='grid gap-6 md:grid-cols-2'>
-                            {user.events.map((event) => (
-                                <EventCard
-                                    key={event.id}
-                                    event={event}
-                                    username={params.username}
-                                    isPublic={true}
-                                />
-                            ))}
-                        </div>
-                    )
-            }
+        <div className='flex flex-col justify-center lg:flex-row px-4 py-8'>
+            <EventDetails event={event} />
+            <Suspense fallback={<div>Loading booking Form...</div>}>
+                <BookingForm event={event} availability={availability} />
+            </Suspense>
+
         </div>
     );
 };
 
-export default UserPage;
+export default EventPage;
