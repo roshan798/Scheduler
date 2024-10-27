@@ -30,11 +30,12 @@ interface Event {
 interface Meeting {
     id: string;
     event: Event;
-    startTime: string; 
+    startTime: string;
     endTime: string;
-    additionalInfo?: string;
+    additionalInfo?: string | null;
     meetLink?: string;
 }
+
 
 interface MeetingListProps {
     meetings: Meeting[];
@@ -42,10 +43,10 @@ interface MeetingListProps {
 }
 
 export default function MeetingList({ meetings, type }: MeetingListProps) {
+
     if (meetings.length === 0) {
         return <p>No {type} meetings found.</p>;
     }
-
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {meetings.map((meeting) => (
