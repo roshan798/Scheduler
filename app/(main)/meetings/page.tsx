@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import React, { Suspense } from 'react'
 import MeetingList from './_components/MeetingList'
 
-export const metaData = {
+export const metadata = {
     title: 'Meetings | Scheduler',
     description: "View and manage your upcoming and past meetings.",
 }
